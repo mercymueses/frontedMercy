@@ -5,7 +5,7 @@ import './App.css'
 import Conversor from './Conversor'
 
 function App() {
-  const [usuario, setUsuario] = useState('')
+  const [usuario, setUsuario] = useState ('')
   const [clave, setClave] = useState('')
   const [logueado, setLogueado] = useState(false)
   
@@ -17,22 +17,39 @@ function cambiarClave(evento) {
   setClave(evento.target.value)
   }
 
-  function ingresar() {
-    if (usuario == 'admin' && clave == 'admin') {
-      alert('Ingresaste')
+  async function ingresar() {
+    const peticion = await fetch('http://localhost:3000/login?usuario=' + usuario +'&clave' + clave,{credentials: 'include'})
+    if (peticion.ok) {
       setLogueado(true)
-    }else {
-    alert('usuario o clave incorrectos')
+    } else {
+      alert('usuario o clave incorrectos')
     } 
+  
+  
+  
+  
+  
+  
   }
 
+  async function validar() {
+    const peticion = await fetch('http://localhost:3000/valiar', {credentials: 'include' })
+    if (peticion.ok) {
+      setLogueado(true)
+    } 
+  }
+  
+  useEffect(() => {
+    validar()
+  }, [])
+  
   if (logueado) {
     return <Conversor />
   }
 
   return (
     <>
-    <h1>Inicio de sesión</h1>
+      <h1>Inicio de sesión</h1>
       <input placeholder='Usuario' type="text" name="usuario" id="usuario" value={usuario} onChange={cambiarUsuario} />
       <input placeholder='Clave' type="password" name="clave" id="clave" value={clave} onChange={cambiarClave} />
       <button onClick={ingresar}>Ingresar</button>
